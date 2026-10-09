@@ -1,0 +1,82 @@
+{
+  "_comment": "Information subsystem content: the fog dial's purchase rungs and gold prices, plus information-revealing parameters. Every number is ASSUMED for a plain fantasy setting (see docs/CONSTANTS.md); none reproduces a commercial title. The dial W in {0..K}, K=FOG_K=4: W=0 full fog and no purchases; W=K full observability; intermediate rungs enable purchase types and shrink prices (design §2). SCOUT is priced IN KIND (a unit's production + per-turn upkeep + exposure risk), charged through the existing production/upkeep ledger -- it adds no action and no gold price.",
+  "city_sight": {
+    "source": "ASSUMED",
+    "value": 2,
+    "note": "sight radius contributed by every city to its owner's visible set"
+  },
+  "spy_tech": {
+    "source": "ASSUMED",
+    "value": "writing",
+    "note": "SPY purchases require this tech (design: 'tech-gated'; the tree has no espionage tech, so the gate reuses writing)"
+  },
+  "spy_duration": {
+    "source": "ASSUMED",
+    "value": 10,
+    "note": "a spy reveals the target city's hex and production queue for k observation turns"
+  },
+  "trade_corridor_radius": {
+    "source": "ASSUMED",
+    "value": 2,
+    "note": "TRADE reveals the hexes within this radius of the hex line between the two capitals, as a one-shot memory write"
+  },
+  "scout_pricing": {
+    "source": "ASSUMED",
+    "value": "in kind: unit production cost + per-turn upkeep + exposure risk",
+    "note": "SCOUT (design section 2) is a unit's sight: it adds no action and no gold price; it is charged through the existing production and upkeep ledger"
+  },
+  "rung_purchases": {
+    "source": "ASSUMED",
+    "value": {
+      "0": [],
+      "1": [
+        "spy"
+      ],
+      "2": [
+        "spy",
+        "trade",
+        "diplo"
+      ],
+      "3": [
+        "spy",
+        "trade",
+        "diplo",
+        "oracle"
+      ],
+      "4": []
+    },
+    "note": "purchase types enabled per fog-dial rung; W=4 is already full observability so nothing is purchasable"
+  },
+  "prices": {
+    "source": "ASSUMED",
+    "value": {
+      "spy": {
+        "1": 80,
+        "2": 60,
+        "3": 40
+      },
+      "trade": {
+        "2": 50,
+        "3": 40
+      },
+      "diplo": {
+        "2": 70,
+        "3": 50
+      },
+      "oracle": {
+        "3": 150
+      }
+    },
+    "note": "gold price per purchase type per dial rung; a rung absent from a type's table means the type is not purchasable at that rung"
+  },
+  "belief_particles": {
+    "source": "ASSUMED",
+    "value": 64,
+    "note": "fixed particle count for the particle-filter belief on maps too large for exact enumeration"
+  },
+  "belief_support_cap": {
+    "source": "ASSUMED",
+    "value": 200000,
+    "note": "support-size accounting stops counting above this bound and reports the cap instead (used in purchase record entries)"
+  }
+}

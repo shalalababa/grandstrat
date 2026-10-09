@@ -1,0 +1,237 @@
+{
+  "_comment": "Every number here is ASSUMED for a plain fantasy setting (see docs/CONSTANTS.md). Changing any value changes world trajectories but not the engine's semantics.",
+  "unit_hp_max": {
+    "source": "ASSUMED",
+    "value": 100
+  },
+  "city_hp_max": {
+    "source": "ASSUMED",
+    "value": 200
+  },
+  "city_base_def": {
+    "source": "ASSUMED",
+    "value": 6
+  },
+  "city_hp_per_walls": {
+    "source": "ASSUMED",
+    "value": 60
+  },
+  "city_def_per_walls": {
+    "source": "ASSUMED",
+    "value": 4
+  },
+  "city_capture_hp_fraction": {
+    "source": "ASSUMED",
+    "value": 0.5
+  },
+  "city_ranged_damage_factor": {
+    "source": "ASSUMED",
+    "value": 0.5
+  },
+  "damage_base": {
+    "source": "ASSUMED",
+    "value": 28
+  },
+  "damage_exponent": {
+    "source": "ASSUMED",
+    "value": 0.75
+  },
+  "roll_low": {
+    "source": "ASSUMED",
+    "value": 0.8
+  },
+  "roll_high": {
+    "source": "ASSUMED",
+    "value": 1.2
+  },
+  "hp_strength_floor": {
+    "source": "ASSUMED",
+    "value": 0.5
+  },
+  "flank_bonus": {
+    "source": "ASSUMED",
+    "value": 0.15
+  },
+  "flank_max": {
+    "source": "ASSUMED",
+    "value": 2
+  },
+  "heal_per_turn": {
+    "source": "ASSUMED",
+    "value": 5
+  },
+  "eat_per_pop": {
+    "source": "ASSUMED",
+    "value": 2
+  },
+  "resource_yield": {
+    "source": "ASSUMED",
+    "value": {
+      "wheat": {
+        "food": 2
+      },
+      "iron": {
+        "prod": 2
+      },
+      "gold_ore": {
+        "gold": 3
+      }
+    }
+  },
+  "growth_base": {
+    "source": "ASSUMED",
+    "value": 15
+  },
+  "growth_per_pop": {
+    "source": "ASSUMED",
+    "value": 8
+  },
+  "city_center_yield": {
+    "source": "ASSUMED",
+    "value": {
+      "food": 2,
+      "prod": 2,
+      "gold": 1,
+      "science": 1
+    }
+  },
+  "border_culture": {
+    "source": "ASSUMED",
+    "value": [
+      0,
+      15,
+      50,
+      120,
+      250
+    ]
+  },
+  "base_culture_per_turn": {
+    "source": "ASSUMED",
+    "value": 1
+  },
+  "city_min_dist": {
+    "source": "ASSUMED",
+    "value": 2
+  },
+  "settler_min_pop": {
+    "source": "ASSUMED",
+    "value": 2
+  },
+  "work_score_weights": {
+    "source": "ASSUMED",
+    "value": {
+      "food": 2.0,
+      "prod": 1.5,
+      "gold": 1.0
+    }
+  },
+  "start_gold": {
+    "source": "ASSUMED",
+    "value": 20
+  },
+  "score_weights": {
+    "source": "ASSUMED",
+    "value": {
+      "city": 8,
+      "tech": 6,
+      "territory": 1,
+      "gold_per": 10
+    }
+  },
+  "terminal_reward": {
+    "source": "ASSUMED",
+    "value": 100.0
+  },
+  "barb_camps_default": {
+    "source": "ASSUMED",
+    "value": 6
+  },
+  "barb_spawn_chance": {
+    "source": "ASSUMED",
+    "value": 0.06
+  },
+  "barb_horseman_chance": {
+    "source": "ASSUMED",
+    "value": 0.3,
+    "note": "share of barbarian spawns that are horsemen (rest warriors)"
+  },
+  "barb_max_per_camp": {
+    "source": "ASSUMED",
+    "value": 2
+  },
+  "barb_spawn_radius": {
+    "source": "ASSUMED",
+    "value": 2
+  },
+  "barb_aggression_radius": {
+    "source": "ASSUMED",
+    "value": 4
+  },
+  "barb_clear_bounty": {
+    "source": "ASSUMED",
+    "value": 20
+  },
+  "sea_level": {
+    "source": "ASSUMED",
+    "value": 0.45
+  },
+  "noise_scale": {
+    "source": "ASSUMED",
+    "value": 3
+  },
+  "land_falloff": {
+    "source": "ASSUMED",
+    "value": 0.25
+  },
+  "terrain_hill_cut": {
+    "source": "ASSUMED",
+    "value": 0.62
+  },
+  "terrain_mountain_cut": {
+    "source": "ASSUMED",
+    "value": 0.85
+  },
+  "terrain_forest_cut": {
+    "source": "ASSUMED",
+    "value": 0.4
+  },
+  "resource_chance": {
+    "source": "ASSUMED",
+    "value": 0.1
+  },
+  "unit_cap": {
+    "source": "ASSUMED",
+    "value": 256
+  },
+  "city_cap": {
+    "source": "ASSUMED",
+    "value": 64
+  },
+  "diplomacy_offer_ttl": {
+    "source": "ASSUMED",
+    "value": 5,
+    "note": "a diplomacy offer expires this many turns after it is made (simple diplomacy module)"
+  },
+  "diplomacy_offer_grid": {
+    "source": "ASSUMED",
+    "value": [
+      0,
+      10,
+      25
+    ],
+    "note": "gold side-payments an OFFER may propose (keeps the legal-action set finite); paid by proposer to acceptor on acceptance"
+  },
+  "diplomacy_reservation": {
+    "source": "ASSUMED",
+    "value": {
+      "open_borders": 12,
+      "share_maps": 20
+    },
+    "note": "scripted acceptors demand at least this much gold for the given agreement kind"
+  },
+  "diplomacy_threshold_jitter": {
+    "source": "ASSUMED",
+    "value": 8,
+    "note": "scripted acceptance threshold = reservation + (pid*7 + acceptor*13) mod jitter; deterministic public pseudo-noise, no rng draw"
+  }
+}

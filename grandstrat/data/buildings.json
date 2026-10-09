@@ -1,0 +1,10 @@
+{
+  "barracks":   {"source": "ASSUMED", "cost": 80,  "tech": null,          "yield": {"food": 0, "prod": 2, "gold": 0, "science": 0}, "def": 0, "hp": 0},
+  "granary":    {"source": "ASSUMED", "cost": 70,  "tech": "pottery",     "yield": {"food": 2, "prod": 0, "gold": 0, "science": 0}, "def": 0, "hp": 0},
+  "walls":      {"source": "ASSUMED", "cost": 80,  "tech": "masonry",     "yield": {"food": 0, "prod": 0, "gold": 0, "science": 0}, "def": 4, "hp": 60},
+  "library":    {"source": "ASSUMED", "cost": 90,  "tech": "writing",     "yield": {"food": 0, "prod": 0, "gold": 0, "science": 3}, "def": 0, "hp": 0},
+  "market":     {"source": "ASSUMED", "cost": 90,  "tech": "currency",    "yield": {"food": 0, "prod": 0, "gold": 3, "science": 0}, "def": 0, "hp": 0},
+  "university": {"source": "ASSUMED", "cost": 160, "tech": "education",   "yield": {"food": 0, "prod": 0, "gold": 0, "science": 4}, "def": 0, "hp": 0},
+  "bank":       {"source": "ASSUMED", "cost": 160, "tech": "economics",   "yield": {"food": 0, "prod": 0, "gold": 4, "science": 0}, "def": 0, "hp": 0},
+  "laboratory": {"source": "ASSUMED", "cost": 220, "tech": "scientific_method", "yield": {"food": 0, "prod": 0, "gold": 0, "science": 6}, "def": 0, "hp": 0}
+}

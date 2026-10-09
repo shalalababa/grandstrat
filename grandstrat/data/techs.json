@@ -1,0 +1,358 @@
+{
+ "agriculture": {
+  "source": "ASSUMED",
+  "tier": 1,
+  "cost": 25,
+  "prereqs": [],
+  "unlocks": {
+   "units": [],
+   "buildings": [],
+   "improvements": [
+    "farm"
+   ]
+  }
+ },
+ "pottery": {
+  "source": "ASSUMED",
+  "tier": 1,
+  "cost": 30,
+  "prereqs": [
+   "agriculture"
+  ],
+  "unlocks": {
+   "units": [],
+   "buildings": [
+    "granary"
+   ],
+   "improvements": []
+  }
+ },
+ "mining": {
+  "source": "ASSUMED",
+  "tier": 1,
+  "cost": 30,
+  "prereqs": [],
+  "unlocks": {
+   "units": [],
+   "buildings": [],
+   "improvements": [
+    "mine"
+   ]
+  }
+ },
+ "archery": {
+  "source": "ASSUMED",
+  "tier": 1,
+  "cost": 35,
+  "prereqs": [
+   "agriculture"
+  ],
+  "unlocks": {
+   "units": [
+    "archer"
+   ],
+   "buildings": [],
+   "improvements": []
+  }
+ },
+ "animal_husbandry": {
+  "source": "ASSUMED",
+  "tier": 1,
+  "cost": 35,
+  "prereqs": [
+   "agriculture"
+  ],
+  "unlocks": {
+   "units": [],
+   "buildings": [],
+   "improvements": []
+  }
+ },
+ "trapping": {
+  "source": "ASSUMED",
+  "tier": 1,
+  "cost": 40,
+  "prereqs": [],
+  "unlocks": {
+   "units": [],
+   "buildings": [],
+   "improvements": [
+    "lumberyard"
+   ]
+  }
+ },
+ "the_wheel": {
+  "source": "ASSUMED",
+  "tier": 2,
+  "cost": 60,
+  "prereqs": [
+   "animal_husbandry"
+  ],
+  "unlocks": {
+   "units": [],
+   "buildings": [],
+   "improvements": [
+    "trading_post"
+   ]
+  }
+ },
+ "bronze_working": {
+  "source": "ASSUMED",
+  "tier": 2,
+  "cost": 65,
+  "prereqs": [
+   "mining"
+  ],
+  "unlocks": {
+   "units": [
+    "spearman"
+   ],
+   "buildings": [],
+   "improvements": []
+  }
+ },
+ "writing": {
+  "source": "ASSUMED",
+  "tier": 2,
+  "cost": 70,
+  "prereqs": [
+   "pottery"
+  ],
+  "unlocks": {
+   "units": [],
+   "buildings": [
+    "library"
+   ],
+   "improvements": []
+  }
+ },
+ "masonry": {
+  "source": "ASSUMED",
+  "tier": 2,
+  "cost": 70,
+  "prereqs": [
+   "mining"
+  ],
+  "unlocks": {
+   "units": [],
+   "buildings": [
+    "walls"
+   ],
+   "improvements": []
+  }
+ },
+ "horseback_riding": {
+  "source": "ASSUMED",
+  "tier": 2,
+  "cost": 75,
+  "prereqs": [
+   "animal_husbandry"
+  ],
+  "unlocks": {
+   "units": [
+    "horseman"
+   ],
+   "buildings": [],
+   "improvements": []
+  }
+ },
+ "currency": {
+  "source": "ASSUMED",
+  "tier": 2,
+  "cost": 80,
+  "prereqs": [
+   "writing"
+  ],
+  "unlocks": {
+   "units": [],
+   "buildings": [
+    "market"
+   ],
+   "improvements": []
+  }
+ },
+ "civil_service": {
+  "source": "ASSUMED",
+  "tier": 3,
+  "cost": 120,
+  "prereqs": [
+   "currency"
+  ],
+  "unlocks": {
+   "units": [],
+   "buildings": [],
+   "improvements": []
+  },
+  "abilities": {
+   "city_sight_bonus": 1
+  },
+  "note": "abilities: every city sees 1 hex farther (data-driven ability)"
+ },
+ "iron_working": {
+  "source": "ASSUMED",
+  "tier": 3,
+  "cost": 125,
+  "prereqs": [
+   "bronze_working"
+  ],
+  "unlocks": {
+   "units": [],
+   "buildings": [],
+   "improvements": []
+  }
+ },
+ "mathematics": {
+  "source": "ASSUMED",
+  "tier": 3,
+  "cost": 130,
+  "prereqs": [
+   "writing",
+   "the_wheel"
+  ],
+  "unlocks": {
+   "units": [],
+   "buildings": [],
+   "improvements": []
+  }
+ },
+ "construction": {
+  "source": "ASSUMED",
+  "tier": 3,
+  "cost": 135,
+  "prereqs": [
+   "masonry"
+  ],
+  "unlocks": {
+   "units": [],
+   "buildings": [],
+   "improvements": []
+  }
+ },
+ "engineering": {
+  "source": "ASSUMED",
+  "tier": 3,
+  "cost": 150,
+  "prereqs": [
+   "mathematics",
+   "construction"
+  ],
+  "unlocks": {
+   "units": [
+    "catapult"
+   ],
+   "buildings": [],
+   "improvements": []
+  }
+ },
+ "guilds": {
+  "source": "ASSUMED",
+  "tier": 3,
+  "cost": 145,
+  "prereqs": [
+   "currency",
+   "trapping"
+  ],
+  "unlocks": {
+   "units": [],
+   "buildings": [],
+   "improvements": []
+  },
+  "abilities": {
+   "gold_per_turn": 3
+  },
+  "note": "abilities: +3 gold per turn civ-wide (data-driven ability; guilds was otherwise a dead-end tech)"
+ },
+ "chivalry": {
+  "source": "ASSUMED",
+  "tier": 4,
+  "cost": 200,
+  "prereqs": [
+   "horseback_riding",
+   "civil_service"
+  ],
+  "unlocks": {
+   "units": [
+    "knight"
+   ],
+   "buildings": [],
+   "improvements": []
+  }
+ },
+ "machinery": {
+  "source": "ASSUMED",
+  "tier": 4,
+  "cost": 210,
+  "prereqs": [
+   "engineering",
+   "iron_working"
+  ],
+  "unlocks": {
+   "units": [
+    "crossbowman"
+   ],
+   "buildings": [],
+   "improvements": []
+  }
+ },
+ "education": {
+  "source": "ASSUMED",
+  "tier": 4,
+  "cost": 220,
+  "prereqs": [
+   "civil_service",
+   "mathematics"
+  ],
+  "unlocks": {
+   "units": [],
+   "buildings": [
+    "university"
+   ],
+   "improvements": []
+  }
+ },
+ "economics": {
+  "source": "ASSUMED",
+  "tier": 4,
+  "cost": 240,
+  "prereqs": [
+   "education"
+  ],
+  "unlocks": {
+   "units": [],
+   "buildings": [
+    "bank"
+   ],
+   "improvements": []
+  }
+ },
+ "gunpowder": {
+  "source": "ASSUMED",
+  "tier": 4,
+  "cost": 260,
+  "prereqs": [
+   "machinery"
+  ],
+  "unlocks": {
+   "units": [
+    "musketman"
+   ],
+   "buildings": [],
+   "improvements": []
+  }
+ },
+ "scientific_method": {
+  "source": "ASSUMED",
+  "tier": 4,
+  "cost": 280,
+  "prereqs": [
+   "education"
+  ],
+  "unlocks": {
+   "units": [],
+   "buildings": [
+    "laboratory"
+   ],
+   "improvements": []
+  }
+ }
+}

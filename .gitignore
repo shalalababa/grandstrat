@@ -1,0 +1,15 @@
+# virtual environments
+.venv/
+.venv*/
+venv/
+
+# Python build and cache files
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+
+# game records written by the CLI
+records/

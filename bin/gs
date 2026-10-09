@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# `gs` command-line entry point (works from any cwd without installation).
+# Runs the package with `python3` from PATH (e.g. an activated venv), or with
+# the interpreter named by $GS_PYTHON if set.  The engine needs numpy.
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+export PYTHONPATH="$DIR${PYTHONPATH:+:$PYTHONPATH}"
+exec "${GS_PYTHON:-python3}" -m grandstrat "$@"

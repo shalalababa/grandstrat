@@ -1,0 +1,7 @@
+{
+  "plains":   {"source": "ASSUMED", "passable": true,  "is_water": false, "move_cost": 1, "def_mod": 1.0,  "food": 2, "prod": 1, "gold": 0},
+  "forest":   {"source": "ASSUMED", "passable": true,  "is_water": false, "move_cost": 2, "def_mod": 1.25, "food": 1, "prod": 2, "gold": 0},
+  "hills":    {"source": "ASSUMED", "passable": true,  "is_water": false, "move_cost": 2, "def_mod": 1.5,  "food": 1, "prod": 2, "gold": 0},
+  "mountain": {"source": "ASSUMED", "passable": false, "is_water": false, "move_cost": -1, "def_mod": 1.5, "food": 0, "prod": 0, "gold": 0},
+  "water":    {"source": "ASSUMED", "passable": false, "is_water": true,  "move_cost": -1, "def_mod": 1.0, "food": 1, "prod": 0, "gold": 1}
+}

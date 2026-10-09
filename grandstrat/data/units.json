@@ -1,0 +1,13 @@
+{
+  "settler":     {"source": "ASSUMED", "move": 2, "strength": 5,  "ranged_strength": 0,  "range": 0, "cost": 80,  "upkeep": 1, "sight": 2, "tech": null, "civilian": true},
+  "worker":      {"source": "ASSUMED", "move": 2, "strength": 5,  "ranged_strength": 0,  "range": 0, "cost": 60,  "upkeep": 1, "sight": 2, "tech": null, "civilian": true},
+  "scout":       {"source": "ASSUMED", "move": 2, "strength": 6,  "ranged_strength": 0,  "range": 0, "cost": 30,  "upkeep": 0, "sight": 4, "tech": null, "civilian": false},
+  "warrior":     {"source": "ASSUMED", "move": 1, "strength": 10, "ranged_strength": 0,  "range": 0, "cost": 40,  "upkeep": 1, "sight": 2, "tech": null, "civilian": false},
+  "archer":      {"source": "ASSUMED", "move": 1, "strength": 7,  "ranged_strength": 10, "range": 2, "cost": 45,  "upkeep": 1, "sight": 2, "tech": "archery", "civilian": false},
+  "spearman":    {"source": "ASSUMED", "move": 1, "strength": 12, "ranged_strength": 0,  "range": 0, "cost": 50,  "upkeep": 1, "sight": 2, "tech": "bronze_working", "civilian": false},
+  "horseman":    {"source": "ASSUMED", "move": 2, "strength": 12, "ranged_strength": 0,  "range": 0, "cost": 70,  "upkeep": 2, "sight": 2, "tech": "horseback_riding", "civilian": false},
+  "catapult":    {"source": "ASSUMED", "move": 1, "strength": 6,  "ranged_strength": 16, "range": 2, "cost": 90,  "upkeep": 2, "sight": 2, "tech": "engineering", "civilian": false},
+  "knight":      {"source": "ASSUMED", "move": 2, "strength": 20, "ranged_strength": 0,  "range": 0, "cost": 120, "upkeep": 3, "sight": 2, "tech": "chivalry", "civilian": false},
+  "crossbowman": {"source": "ASSUMED", "move": 1, "strength": 12, "ranged_strength": 18, "range": 2, "cost": 100, "upkeep": 2, "sight": 2, "tech": "machinery", "civilian": false},
+  "musketman":   {"source": "ASSUMED", "move": 1, "strength": 26, "ranged_strength": 0,  "range": 0, "cost": 130, "upkeep": 3, "sight": 2, "tech": "gunpowder", "civilian": false}
+}
