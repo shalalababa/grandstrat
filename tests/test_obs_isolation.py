@@ -60,6 +60,8 @@ def test_clone_state_is_exact_deep_copy():
     h0 = env.hidden_state_hash()
     clone = env.clone_state()
     assert clone.state_hash() == h0
+    original_rules_arrays = {name: getattr(env.state, name).copy()
+                             for name in ("passable", "move_cost", "yf", "yp", "yg")}
     # mutate every mutable corner of the clone
     clone.terrain[:] += 1
     clone.owner[:] = -2
@@ -74,7 +76,18 @@ def test_clone_state_is_exact_deep_copy():
         civ.gold += 1
     clone.next_unit_id += 1
     clone.done = not clone.done
+    clone.params["T"] += 1
+    clone.dials["fog"] = 0
     assert env.hidden_state_hash() == h0, "clone mutation leaked into state"
+    assert env.state.params["T"] != clone.params["T"]
+    assert env.state.dials["fog"] != clone.dials["fog"]
+    # Yield arrays are used by IMPROVE during rollouts and are omitted from
+    # the state hash, so check them directly as well.
+    for name in original_rules_arrays:
+        arr = getattr(clone, name)
+        assert not np.shares_memory(arr, getattr(env.state, name))
+        arr[0] = not arr[0] if name == "passable" else arr[0] + 1
+        assert np.array_equal(getattr(env.state, name), original_rules_arrays[name])
 
 
 def test_hidden_state_hash_tracks_every_mutated_field():

@@ -638,17 +638,18 @@ class FogInformation(InformationModule):
         return None if p is None else int(p)
 
     def _known_enemy_cities(self, state: GameState, civ: int) -> list[int]:
-        """Ids of enemy (alive-owner) cities the civ has seen or sees now."""
+        """Enemy cities known from sight or memory, without consulting hidden
+        current ownership or existence. A stale target is checked at execution."""
         fog = self._game[civ]
         hm = self._hm(int(state.params["R"]))
-        known = {int(fog.c_id[i]) for i in np.flatnonzero(fog.c_hp >= 0)}
+        known = {int(fog.c_id[i]) for i in np.flatnonzero(fog.c_hp >= 0)
+                 if int(fog.c_owner[i]) >= 0
+                 and int(fog.c_owner[i]) != civ
+                 and state.civs[int(fog.c_owner[i])].alive}
         for c in state.cities.values():
             if c.owner >= 0 and c.owner != civ and fog.vis[hm.index(c.q, c.r)]:
                 known.add(c.id)
-        return sorted(cid for cid in known
-                      if cid in state.cities
-                      and state.cities[cid].owner >= 0
-                      and state.cities[cid].owner != civ)
+        return sorted(known)
 
     def purchases_legal(self, state: GameState, civ: int) -> list[tuple]:
         if not self._game or not state.civs[civ].alive:
@@ -664,8 +665,7 @@ class FogInformation(InformationModule):
                 # true ids here: present_actions re-keys the WHOLE legal list
                 # (purchases included) into handles exactly once
                 for cid in self._known_enemy_cities(state, civ):
-                    if state.civs[state.cities[cid].owner].alive:
-                        out.append(("SPY", cid))
+                    out.append(("SPY", cid))
         if "trade" in enabled:
             price = self._price(prices, "trade", W)
             if price is not None and gold >= price:
@@ -685,9 +685,10 @@ class FogInformation(InformationModule):
                 out.append(("ORACLE",))
         return out
 
-    def resolve_purchase(self, state: GameState, report, civ: int, action) -> None:
+    def resolve_purchase(self, state: GameState, report, civ: int, action) -> bool:
         """Resolve one validated purchase: charge gold, apply the reveal,
-        write the record entry.  Runs in the orders_information phase."""
+        write the record entry. Return False for a stale SPY target.
+        Runs in the orders_information phase."""
         if not self._game:
             self._ensure(state)
         kind = action[0].lower()
@@ -713,7 +714,9 @@ class FogInformation(InformationModule):
             if cid not in self._known_enemy_cities(state, civ):
                 raise InvalidAction(
                     f"civ {civ}: SPY target city {cid} unknown to the buyer")
-            city = state.cities[cid]
+            city = state.cities.get(cid)
+            if city is None or city.owner < 0 or city.owner == civ:
+                return False  # stale remembered target; no purchase is made
             k = int(self.tables.information["spy_duration"]["value"])
             until = state.turn + k
             fog.spies.append((cid, until))
@@ -726,10 +729,11 @@ class FogInformation(InformationModule):
             if partner == civ or not state.civs[partner].alive:
                 raise InvalidAction(f"civ {civ}: TRADE partner {partner} invalid")
             hm = self._hm(int(state.params["R"]))
-            mine = next(c for c in state.cities.values()
-                        if c.owner == civ and c.capital)
-            theirs = next(c for c in state.cities.values()
-                          if c.owner == partner and c.capital)
+            # Standard worldgen founds capitals in civ-id order. Their city
+            # ids and locations persist after capture, when the founder may
+            # survive on secondary cities and no longer own a capital.
+            mine = state.cities[civ]
+            theirs = state.cities[partner]
             line = hex_line(hm, hm.index(mine.q, mine.r),
                             hm.index(theirs.q, theirs.r))
             r = int(self.tables.information["trade_corridor_radius"]["value"])
@@ -769,6 +773,7 @@ class FogInformation(InformationModule):
             ev["_buyer"] = civ  # "after" filled at the next observation build
             self._pending_support.append(ev)
         report.events.append(ev)
+        return True
 
     def _support_size(self, state: GameState, civ: int):
         """Exact belief-support size for `civ` from its current memory; small maps only, capped.  A diagnostic

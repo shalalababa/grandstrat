@@ -141,3 +141,32 @@ def test_replay_detects_seed_tampering(tmp_path):
         assert not res["ok"], "replay accepted a tampered seed"
     except Exception:
         pass
+
+
+@pytest.mark.parametrize("location,field", [
+    (0, "tables_sha256"),
+    (1, "events"),
+    (1, "ledger"),
+    (1, "turn"),
+    (-2, "winner"),
+    (-1, "final_scores"),
+    (-1, "turns"),
+])
+def test_replay_checks_recorded_fields(tmp_path, location, field):
+    _, _, path = play_record(tmp_path, 2, scenario="tiny")
+    lines = _lines(path)
+    lines[location][field] = "tampered"
+    altered = tmp_path / "altered.jsonl"
+    altered.write_text("".join(json.dumps(line) + "\n" for line in lines))
+    result = replay_record(str(altered))
+    assert not result["ok"]
+    assert any(m["field"] == field for m in result["mismatches"])
+
+
+def test_replay_rejects_truncated_record(tmp_path):
+    _, _, path = play_record(tmp_path, 2, scenario="tiny")
+    lines = _lines(path)
+    altered = tmp_path / "truncated.jsonl"
+    altered.write_text("".join(json.dumps(line) + "\n" for line in lines[:-2]))
+    with pytest.raises(ValueError, match="footer"):
+        replay_record(str(altered))

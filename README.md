@@ -229,8 +229,8 @@ docs/                  design, design notes, constants
 
 ## Tests
 
-`python -m pytest -q` runs 114 tests in about 12 seconds on a desktop CPU.
-They cover determinism (including across processes with different hash
+`python -m pytest -q` runs the test suite. It covers determinism (including
+across processes with different hash
 seeds), CRN pairing across dial settings, legal-action completeness on sampled
 mid-game states, ledger conservation (including an independent upkeep
 recount), fog correctness against an adversarial probe that recomputes

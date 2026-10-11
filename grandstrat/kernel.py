@@ -104,7 +104,8 @@ class Kernel:
             diplomacy.resolve_orders(state, report, resolved,
                                      information=information)
         if information is not None:
-            self._orders_information(state, report, resolved, information)
+            self._orders_information(state, report, submitted, resolved,
+                                     information)
         economy.income_phase(state, report, diplomacy=diplomacy)
         barbarian_phase(state, report, self.combat)
 
@@ -262,15 +263,17 @@ class Kernel:
         })
 
     # ------------------------------------------------------------------
-    def _orders_information(self, state, report, submitted, information) -> None:
+    def _orders_information(self, state, report, submitted, resolved,
+                            information) -> None:
         """Resolve SPY/TRADE/DIPLO/ORACLE purchases, civ id order.  The
         information module charges gold, applies reveals, and writes the
         record entry; the spend is accumulated on the report so income_phase
         puts an explicit `purchase` column in the gold ledger rows."""
         for civ in range(len(state.civs)):
-            for a in submitted[civ]:
-                if a[0] in ("SPY", "TRADE", "DIPLO", "ORACLE"):
-                    information.resolve_purchase(state, report, civ, a)
+            for a_sub, a_res in zip(submitted[civ], resolved[civ]):
+                if a_res[0] in ("SPY", "TRADE", "DIPLO", "ORACLE"):
+                    if information.resolve_purchase(state, report, civ, a_res) is False:
+                        self._stale(report, civ, a_sub, "city_missing")
 
     # ------------------------------------------------------------------
     def _cleanup(self, state, report, diplomacy=None) -> None:

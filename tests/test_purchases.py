@@ -100,6 +100,70 @@ def test_spy_tech_gate():
     assert not any(a[0] == "SPY" for a in env.legal_actions(0))
 
 
+def test_remembered_spy_target_does_not_reveal_hidden_destruction():
+    """A city's disappearance outside sight cannot remove its SPY action.
+    Buying intelligence on a stale remembered target drops without a charge."""
+    env = make_env("duel", dials={"fog": 1}, config={"information": "fog"})
+    env.reset(0)
+    _rich(env, 0)
+    _give_writing(env, 0)
+    city = next(c for c in env.state.cities.values() if c.owner == 1)
+    idx = env.state.hexmap.index(city.q, city.r)
+    fog = env.info._game[0]
+    assert not fog.vis[idx]
+    fog.c_id[idx] = city.id
+    fog.c_owner[idx] = city.owner
+    fog.c_hp[idx] = city.hp
+    fog.last_seen[idx] = 0
+    spy = ("SPY", env.info._c_handle(fog, city.id))
+    assert spy in env.legal_actions(0)
+
+    # The target was destroyed outside sight. Public alive news has not
+    # changed yet; the observer still has exactly the same city memory.
+    del env.state.cities[city.id]
+    env.state.occ_city[idx] = -1
+    env._legal_cache.clear()
+    assert spy in env.legal_actions(0)
+    before = env.state.civs[0].gold
+    _, _, _, _, infos = env.step({0: [spy]})
+    report = infos[0]["report"]
+    assert {"type": "rejected", "civ": 0, "action": list(spy),
+            "reason": "city_missing"} in report.events
+    assert report.ledger["gold"][0]["purchase"] == 0
+    assert not any(e["type"] == "info_purchase" for e in report.events)
+
+
+def test_trade_uses_original_capital_after_capture():
+    """A civ surviving on a secondary city can still buy a capital route."""
+    from grandstrat.state import City
+
+    env = make_env("duel", dials={"fog": 2}, config={"information": "fog"})
+    env.reset(0)
+    _rich(env, 0)
+    st = env.state
+    original_capital = st.cities[0]
+    partner_capital = st.cities[1]
+    i = next(i for i in range(st.hexmap.n)
+             if st.passable[i] and st.occ_city[i] < 0 and st.owner[i] == 0)
+    second = City(st.next_city_id, 0, int(st.hexmap.qs[i]),
+                  int(st.hexmap.rs[i]), capital=False)
+    st.cities[second.id] = second
+    st.occ_city[i] = second.id
+    st.next_city_id += 1
+    original_capital.owner = 1
+    st.territory_stale = True
+
+    trade = ("TRADE", 1)
+    assert trade in env.legal_actions(0)
+    _, _, _, _, infos = env.step({0: [trade]})
+    event = next(e for e in infos[0]["report"].events
+                 if e["type"] == "info_purchase" and e["purchase"] == "trade")
+    assert event["revealed"]["endpoints"] == [
+        [original_capital.q, original_capital.r],
+        [partner_capital.q, partner_capital.r],
+    ]
+
+
 def test_purchase_without_fog_module_raises():
     """Purchases exist only under the fog information module."""
     env = make_env("duel", dials={"fog": 2})

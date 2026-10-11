@@ -4,8 +4,9 @@ action log) and verify every recorded state hash and every recorded score.
     python3 -m grandstrat.replay --record path/to/game.jsonl
     # or: gs replay --record ...
 
-Exit code 0 = the replay reproduces the record byte-for-byte in every checked
-field; nonzero with a diff report otherwise.
+Exit code 0 = the replay reproduces every verifiable recorded field;
+nonzero with a diff report otherwise. Agent compute and agent RNG draws cannot
+be reconstructed from the action log alone.
 """
 
 from __future__ import annotations
@@ -31,8 +32,11 @@ def replay_record(path: str, env: GrandStratEnv | None = None) -> dict:
     header = lines[0]
     if header.get("schema") != RECORD_SCHEMA:
         raise ValueError(f"{path}: schema {header.get('schema')!r} != {RECORD_SCHEMA!r}")
-    turns = [ln for ln in lines if ln.get("kind") == "turn"]
-    footer = next((ln for ln in lines if ln.get("kind") == "footer"), None)
+    if lines[0].get("kind") != "header" or lines[-1].get("kind") != "footer" \
+            or any(ln.get("kind") != "turn" for ln in lines[1:-1]):
+        raise ValueError(f"{path}: expected header, turn lines, footer in order")
+    turns = lines[1:-1]
+    footer = lines[-1]
 
     env = env or GrandStratEnv(
         scenario=header["scenario"],
@@ -58,31 +62,54 @@ def replay_record(path: str, env: GrandStratEnv | None = None) -> dict:
     env.reset(header["seed"])
 
     mismatches = []
-    if header.get("initial_hash") != env.hidden_state_hash():
-        mismatches.append({"turn": "initial", "field": "hash",
-                           "record": header.get("initial_hash"),
-                           "replay": env.hidden_state_hash()})
 
-    for ln in turns:
+    def check(turn, field, recorded, actual):
+        # JSONL converts tuples to lists and integer object keys to strings.
+        # Compare against the value the writer would have serialized.
+        actual = json.loads(json.dumps(actual))
+        if recorded != actual:
+            mismatches.append({"turn": turn, "field": field,
+                               "record": recorded, "replay": actual})
+
+    check("header", "tables_sha256", header.get("tables_sha256"), tables.sha256)
+    check("initial", "hash", header.get("initial_hash"), env.hidden_state_hash())
+    check("initial", "scores", header.get("initial_scores"),
+          [c.score for c in env.state.civs])
+    check("header", "civs", header.get("civs"), len(env.state.civs))
+
+    for index, ln in enumerate(turns):
+        check(index, "schema", ln.get("schema"), RECORD_SCHEMA)
+        check(index, "turn", ln.get("turn"), env.state.turn)
         actions = {int(civ): [_action_from_json(a) for a in acts]
                    for civ, acts in ln["actions"].items()}
         # dead civs submitted nothing; their absent keys are fine
         obs, rewards, terms, truncs, infos = env.step(actions)
-        h = env.hidden_state_hash()
-        if h != ln["hash"]:
-            mismatches.append({"turn": ln["turn"], "field": "hash",
-                               "record": ln["hash"], "replay": h})
-        if [c.score for c in env.state.civs] != ln["scores"]:
-            mismatches.append({"turn": ln["turn"], "field": "scores",
-                               "record": ln["scores"],
-                               "replay": [c.score for c in env.state.civs]})
-        if [c.gold for c in env.state.civs] != ln["gold"]:
-            mismatches.append({"turn": ln["turn"], "field": "gold",
-                               "record": ln["gold"],
-                               "replay": [c.gold for c in env.state.civs]})
-        if bool(env.state.done) != bool(ln["done"]):
-            mismatches.append({"turn": ln["turn"], "field": "done",
-                               "record": ln["done"], "replay": env.state.done})
+        report = infos[0]["report"]
+        for field, actual in (
+            ("hash", env.hidden_state_hash()),
+            ("scores", report.scores), ("gold", report.gold),
+            ("done", report.done), ("winner", report.winner),
+            ("done_reason", report.done_reason),
+            ("events", report.events), ("rolls", report.rolls),
+            ("ledger", report.ledger),
+        ):
+            check(index, field, ln.get(field), actual)
+
+    check("footer", "turns", footer.get("turns"), len(turns))
+    check("footer", "schema", footer.get("schema"), RECORD_SCHEMA)
+    check("footer", "final_scores", footer.get("final_scores"),
+          [c.score for c in env.state.civs])
+    check("footer", "winner", footer.get("winner"), env.state.winner)
+    check("footer", "reason", footer.get("reason"), env.state.done_reason)
+    check("footer", "game_complete", env.state.done, True)
+    # Scripted/custom agents are not run during replay, so their named RNG
+    # streams may have drawn while producing the record. World streams must
+    # still match exactly.
+    draws = footer.get("stream_draws", {})
+    for name in sorted(set(draws) | set(env.state.rng.draw_counts)):
+        if not name.startswith("agent_"):
+            check("footer", f"stream_draws.{name}", draws.get(name),
+                  env.state.rng.draw_counts.get(name))
 
     result = {
         "path": path,
@@ -91,10 +118,7 @@ def replay_record(path: str, env: GrandStratEnv | None = None) -> dict:
         "agents_rebuilt": agents_rebuilt,
         "ok": not mismatches,
     }
-    if footer is not None:
-        result["winner_match"] = (footer.get("winner") == env.state.winner)
-        if not result["winner_match"]:
-            result["ok"] = False
+    result["winner_match"] = (footer.get("winner") == env.state.winner)
     return result
 
 

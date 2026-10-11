@@ -222,11 +222,13 @@ class GameState:
         fresh bundle is made so per-clone override changes stay local."""
         s = GameState.__new__(GameState)
         for field in (
-            "seed", "hexmap", "tables", "params", "dials", "turn",
+            "seed", "hexmap", "tables", "turn",
             "next_unit_id", "next_city_id", "next_camp_id", "done",
             "winner", "done_reason", "territory_stale",
         ):
             setattr(s, field, getattr(self, field))
+        s.params = dict(self.params)
+        s.dials = dict(self.dials)
         s.rng = self.rng.clone()
         s.terrain = self.terrain.copy()
         s.resource = self.resource.copy()
@@ -238,11 +240,11 @@ class GameState:
         s.civs = [c.copy() for c in self.civs]
         s.occ_unit = self.occ_unit.copy()
         s.occ_city = self.occ_city.copy()
-        s.passable = self.passable
-        s.move_cost = self.move_cost
-        s.yf = self.yf
-        s.yp = self.yp
-        s.yg = self.yg
+        s.passable = self.passable.copy()
+        s.move_cost = self.move_cost.copy()
+        s.yf = self.yf.copy()
+        s.yp = self.yp.copy()
+        s.yg = self.yg.copy()
         s.birth_counts = dict(self.birth_counts)
         return s
 

@@ -12,8 +12,9 @@ File layout (one JSON object per line):
            stream_draws, wall_s, cpu_s}
 
 Replay needs exactly: header (seed + scenario + dials + stream_seeds) and the
-per-turn `actions`; everything else is redundant for durability and is
-verified by grandstrat.replay.
+per-turn `actions`; world events, rolls, ledgers and results are verified by
+grandstrat.replay. Agent provenance, compute and agent RNG draws cannot be
+reconstructed from the action log alone.
 """
 
 from __future__ import annotations
